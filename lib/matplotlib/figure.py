@@ -1249,58 +1249,14 @@ default: %(va)s
         cax.figure.stale = True
         return cb
 
-    def set_subplot_parameters(self, subplot_params={}):
+    def set_subplotparams(self, subplotpars=None, **kwargs):
         """
-        Set the layout of subplots in your plot.
-
-        Parameters
-        ----------
-        subplot_params : dict, optional
-            A dictionary containing subplot layout parameters. Valid keys are:
-            "left", "bottom", "right", "top", "wspace", "hspace".
-            If not provided, the function maintains the current subplot layout.
-
-        Note: You can use this function to adjust the spacing and positioning
-        of subplots in your plot.
-
-        Example
-        -------
-        To set the left and right spacing between subplots:
-        set_subplot_parameters({"left": 0.1, "right": 0.9})
+        When a subplotpars element is not included, a new one will be created
+        and intiliazed with the provided kwargs.
         """
-        # List of valid subplot parameter keys
-        valid_keys = ["left", "bottom", "right", "top", "wspace", "hspace"]
-
-        # Dictionary to store keyword arguments for subplots_adjust
-        kwargs = {}
-
-        # Check if subplot_params is a SubplotParams object
-        if isinstance(subplot_params, SubplotParams):
-            # If it is, extract relevant parameters
-            for key in valid_keys:
-                kwargs[key] = getattr(subplot_params, key)
-        elif isinstance(subplot_params, dict):
-            # If it's a dictionary, extract valid keys and values
-            for key, value in subplot_params.items():
-                if key in valid_keys:
-                    kwargs[key] = value
-                else:
-                    # Warn if an invalid key is provided
-                    _api.warn_external(
-                        f"'{key}' is not a valid key for set_subplot_parameters;"
-                        " this key was ignored."
-                    )
-        else:
-            raise TypeError(
-                "subplot_params must be a dictionary or an instance of SubplotParams()"
-            )
-
-        # If no valid parameters are provided, maintain the current state
-        if kwargs == {}:
-            self.set_subplot_parameters(self.get_subplot_parameters())
-
-        # Adjust subplots using the extracted parameters
-        self.subplots_adjust(**kwargs)
+        if subplotpars is None:
+            subplotpars = SubplotParams(**kwargs)
+        self.subplotpars = subplotpars
 
     def get_subplotpars(self):
         """
